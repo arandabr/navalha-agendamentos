@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Agendamentos | NAVALHA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body>
+
+  <div class="av-pg">
+    <header class="sv-top">
+      <div class="container sv-top-inner">
+        <a href="/" class="sv-back"><i class="fa-solid fa-arrow-left"></i><span>Início</span></a>
+        <span class="sv-brand">NAVALHA</span>
+        <a href="/admin" class="sv-painel"><i class="fa-solid fa-user-shield"></i><span>Painel</span></a>
+      </div>
+    </header>
+
+    <main class="container av-pg-inner cl-pg">
+
+      <div id="clAcesso" class="av-card">
+        <div class="av-card-icon ok"><i class="fa-solid fa-user"></i></div>
+        <h1>Agendamentos</h1>
+        <p class="av-sub">Acompanhe seus agendamentos, pontos de fidelidade e cancele horários quando precisar.</p>
+        <form id="clForm">
+          <div class="form-group">
+            <label for="clTel">Seu WhatsApp</label>
+            <input type="tel" id="clTel" class="form-control" placeholder="(11) 99999-9999" required autocomplete="tel">
+            <p class="help-text">Use o mesmo número cadastrado nos seus agendamentos.</p>
+          </div>
+          <div class="av-error hidden" id="clError"></div>
+          <button type="submit" class="btn btn-gold btn-block" id="clBtn"><i class="fa-solid fa-right-to-bracket"></i> Acessar</button>
+        </form>
+      </div>
+
+      <div id="clResult" class="hidden">
+        <div class="av-card">
+          <div class="av-card-icon ok"><i class="fa-solid fa-circle-check"></i></div>
+          <h1>Seus pontos de fidelidade</h1>
+          <div id="clFidelidade"></div>
+        </div>
+
+        <div class="av-card cl-card">
+          <h2>Seus agendamentos</h2>
+          <div id="clAgendamentos"></div>
+        </div>
+
+        <button class="btn btn-ghost btn-block" id="clSair" style="margin-top:14px"><i class="fa-solid fa-arrow-rotate-left"></i> Trocar WhatsApp</button>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="cancelModal">
+    <div class="modal">
+      <div class="cancel-icon"><i class="fa-solid fa-ban"></i></div>
+      <h2>Cancelar agendamento</h2>
+      <p class="confirm-text" id="cancelInfo">Tem certeza que deseja cancelar este agendamento?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelVoltar"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <button type="button" class="btn btn-danger" id="cancelConfirmar"><i class="fa-solid fa-check"></i> Sim, cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/cliente.js"></script>
+</body>
+</html>

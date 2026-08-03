@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Navalha — Agende seu corte, barba e mais em minutos. Encontre as melhores barbearias da sua região.">
+  <title>Navalha | Agendamentos Online para Barbearias</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <nav class="navbar container">
+      <a href="/" class="logo">
+        <span class="logo-mark"><i class="fa-solid fa-scissors"></i></span>
+        <span class="logo-text">NAVALHA<span>.</span></span>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="/#barbearias" class="nav-link">Barbearias</a></li>
+        <li><a href="/#como-funciona" class="nav-link">Como funciona</a></li>
+        <li><a href="/#vantagens" class="nav-link">Vantagens</a></li>
+        <li><a href="/agendamentos" class="nav-link">Agendamentos</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content">
+      <span class="badge"><i class="fa-solid fa-bolt"></i> Agendamento em segundos</span>
+      <h1>Seu corte ideal, <span class="highlight">sem fila</span> e sem espera</h1>
+      <p>Encontre a barbearia perfeita, escolha o serviço, o barbeiro e agende seu horário em minutos. Simples assim.</p>
+
+      <div class="hero-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Buscar por nome, cidade ou barbearia...">
+        <button class="btn btn-gold" onclick="filterShops()"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><h3 id="statShops">0</h3><p>Barbearias parceiras</p></div>
+        <div class="stat"><h3>+10k</h3><p>Agendamentos feitos</p></div>
+        <div class="stat"><h3>4.9★</h3><p>Avaliação média</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="barbearias">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Barbearias parceiras</span>
+        <h2>Escolha onde ser feliz</h2>
+        <p>Cada barbearia tem sua página exclusiva com serviços, profissionais e agenda em tempo real.</p>
+      </div>
+      <div class="shop-filters">
+        <select id="cidadeFilter" class="form-control">
+          <option value="">Todas as cidades</option>
+        </select>
+      </div>
+      <div class="shop-grid" id="shopGrid">
+        <div class="page-loading" style="grid-column: 1/-1;"><i class="fa-solid fa-circle-notch"></i>Carregando barbearias...</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="como-funciona">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Como funciona</span>
+        <h2>Agendar nunca foi tão fácil</h2>
+        <p>Quatro passos simples e seu horário está garantido.</p>
+      </div>
+      <div class="how-grid">
+        <article class="how-card">
+          <div class="how-icon"><i class="fa-solid fa-magnifying-glass-location"></i></div>
+          <h3>1. Escolha a barbearia</h3>
+          <p>Navegue pelo catálogo e encontre a barbearia que combina com seu estilo.</p>
+        </article>
+        <article class="how-card">
+          <div class="how-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+          <h3>2. Escolha o serviço</h3>
+          <p>Corte, barba, sobrancelha, combos... escolha o serviço e o barbeiro preferido.</p>
+        </article>
+        <article class="how-card">
+          <div class="how-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          <h3>3. Selecione o horário</h3>
+          <p>Veja a agenda em tempo real e escolha o dia e horário que funcionam para você.</p>
+        </article>
+        <article class="how-card">
+          <div class="how-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+          <h3>4. Pronto!</h3>
+          <p>Confirme seus dados e receba a confirmação. Chegue, sente na cadeira e relaxe.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section features" id="vantagens">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-tag">Para barbearias</span>
+        <h2>Gerencie tudo em um só lugar</h2>
+        <p>Painel completo para o dono da barbearia controlar agenda, serviços, profissionais e horários.</p>
+      </div>
+      <div class="features-grid">
+        <article class="feature-card">
+          <i class="fa-solid fa-calendar-days"></i>
+          <div><h4>Agenda inteligente</h4><p>Controle de horários em tempo real, sem conflito de marcação e sem dupla reserva.</p></div>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-chart-line"></i>
+          <div><h4>Estatísticas</h4><p>Acompanhe agendamentos, receita e desempenho por dia com painéis claros.</p></div>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-user-gear"></i>
+          <div><h4>Equipe e serviços</h4><p>Cadastre profissionais, serviços, preços e duração de cada atendimento.</p></div>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-whatsapp"></i>
+          <div><h4>WhatsApp integrado</h4><p>Cada cliente recebe confirmação e pode confirmar pelo WhatsApp com um toque.</p></div>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-palette"></i>
+          <div><h4>Identidade própria</h4><p>Cada barbearia tem página individual com cor, fotos e informações exclusivas.</p></div>
+        </article>
+        <article class="feature-card">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <div><h4>Totalmente responsivo</h4><p>Funciona perfeitamente no celular, tablet e computador para você e seus clientes.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>É dono de barbearia?</h2>
+        <p>Tenha sua página própria com agendamento online e gerencie sua agenda pelo painel exclusivo.</p>
+        <div class="cta-actions">
+          <button class="btn btn-gold" id="btnCadastrarBarbearia"><i class="fa-solid fa-store"></i> Cadastrar minha barbearia</button>
+          <a href="/admin" class="btn btn-outline"><i class="fa-solid fa-user-gear"></i> Acessar o painel</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <span class="logo-mark"><i class="fa-solid fa-scissors"></i></span>
+            <span class="logo-text">NAVALHA<span>.</span></span>
+          </a>
+          <p>Plataforma de agendamento online para barbearias. Praticidade para o cliente, controle para o barbeiro.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <ul>
+            <li><a href="/#barbearias">Barbearias</a></li>
+            <li><a href="/#como-funciona">Como funciona</a></li>
+            <li><a href="/#vantagens">Vantagens</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Acesso</h4>
+          <ul>
+            <li><a href="/admin">Painel</a></li>
+            <li><a href="/agendamentos">Agendamentos</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container"><p>&copy; 2026 Navalha Agendamentos. Feito com <i class="fa-solid fa-heart"></i> para quem vive de navalha.</p></div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay hidden" id="cadastroOverlay">
+    <div class="modal">
+      <form id="cadastroForm" class="modal-form">
+        <h2>Cadastrar minha barbearia</h2>
+        <p style="text-align:left">Preencha os dados essenciais. Seu cadastro entra em análise e sua página vai ao ar após a aprovação.</p>
+        <div class="form-group">
+          <label for="cadNome">Nome da barbearia *</label>
+          <input type="text" id="cadNome" class="form-control" required placeholder="Ex.: Navalha de Ouro">
+        </div>
+        <div class="form-group">
+          <label for="cadCidade">Cidade</label>
+          <input type="text" id="cadCidade" class="form-control" placeholder="Ex.: São Paulo - SP">
+        </div>
+        <div class="form-group">
+          <label for="cadWhatsapp">WhatsApp</label>
+          <input type="text" id="cadWhatsapp" class="form-control" placeholder="Ex.: (11) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label for="cadSenha">Senha de acesso ao painel *</label>
+          <input type="password" id="cadSenha" class="form-control" placeholder="Mínimo 4 caracteres" minlength="4" required>
+          <p class="help-text">Você usará esta senha com o link da sua página para acessar o painel de gerenciamento.</p>
+        </div>
+        <div class="form-error hidden" id="cadastroError"></div>
+        <button type="submit" class="btn btn-gold btn-block"><i class="fa-solid fa-paper-plane"></i> Enviar cadastro</button>
+        <button type="button" class="btn btn-ghost btn-block" style="margin-top:8px" onclick="fecharCadastro()">Cancelar</button>
+      </form>
+      <div class="hidden" id="cadastroSuccess">
+        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+        <h2>Cadastro enviado!</h2>
+        <p>Sua barbearia foi cadastrada e está <strong>em análise</strong>. Assim que aprovada, sua página ficará disponível em:</p>
+        <div class="resumo"><div class="row"><span>Página</span><strong id="cadastroLink"></strong></div></div>
+        <button class="btn btn-gold btn-block" onclick="fecharCadastro()">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

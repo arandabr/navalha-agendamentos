@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Agendar | Barbearia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body id="shopPage">
+
+  <div class="page-loading" id="pageLoading">
+    <i class="fa-solid fa-circle-notch"></i>Carregando...
+  </div>
+
+  <div id="shopContent" class="hidden">
+
+    <header class="sv-top">
+      <div class="container sv-top-inner">
+        <a href="/" class="sv-back"><i class="fa-solid fa-arrow-left"></i><span>Barbearias</span></a>
+        <span class="sv-brand">NAVALHA</span>
+        <a href="/agendamentos" class="sv-painel"><i class="fa-solid fa-user"></i><span>Agendamentos</span></a>
+        <a href="/admin" class="sv-painel"><i class="fa-solid fa-user-shield"></i><span>Painel</span></a>
+      </div>
+    </header>
+
+    <section class="sv-hero">
+      <div class="sv-cover" id="capa"></div>
+      <div class="container sv-hero-inner">
+        <div class="sv-head">
+          <div class="sv-avatar" id="avatar"></div>
+          <div class="sv-head-text">
+            <h1 id="nome"></h1>
+            <p class="sv-tagline" id="tagline"></p>
+          </div>
+        </div>
+        <div class="sv-actions">
+          <a href="#" id="whatsBtn" class="btn btn-outline" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+          <a href="#" id="instaBtn" class="btn btn-outline" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="sv-facts">
+      <div class="container sv-facts-inner">
+        <span class="sv-fact"><i class="fa-solid fa-star"></i><b id="avaliacao"></b> avaliação</span>
+        <span class="sv-fact"><i class="fa-solid fa-location-dot"></i><span id="endereco"></span></span>
+        <span class="sv-fact"><i class="fa-solid fa-clock"></i><span id="horarioTexto"></span></span>
+        <span class="sv-fact"><i class="fa-solid fa-phone"></i><span id="telefone"></span></span>
+      </div>
+    </div>
+
+    <main class="sv-main container">
+
+      <div class="sv-col">
+        <section class="sv-sec">
+          <h2 class="sv-sec-title"><i class="fa-solid fa-scissors"></i>Serviços</h2>
+          <div id="servicosList" class="sv-serv-list"></div>
+        </section>
+
+        <section class="sv-sec">
+          <h2 class="sv-sec-title"><i class="fa-solid fa-user-tie"></i>Profissionais</h2>
+          <div id="profissionaisList" class="sv-prof-list"></div>
+        </section>
+
+        <section class="sv-sec">
+          <h2 class="sv-sec-title"><i class="fa-solid fa-star"></i>Avaliações</h2>
+          <div id="avaliacoesBox">
+            <div class="sv-empty" id="avaliacoesEmpty"><i class="fa-solid fa-star-half-stroke"></i>Seja o primeiro a avaliar após o atendimento!</div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="sv-book">
+        <div class="sv-book-head">
+          <h2 class="sv-book-title"><i class="fa-solid fa-calendar-check"></i>Agendar horário</h2>
+          <p class="sv-book-sub">Escolha o serviço, a data e o horário.</p>
+        </div>
+
+        <div class="sv-date" id="dateStrip"></div>
+
+        <div id="timeSection">
+          <div class="sv-empty" id="noSlots"><i class="fa-solid fa-hand-point-left"></i>Selecione um serviço e uma data para ver os horários.</div>
+          <div class="sv-time" id="timeGrid"></div>
+          <button type="button" class="btn btn-outline btn-block hidden" id="btnFila"><i class="fa-solid fa-hourglass-half"></i> Entrar na fila de espera</button>
+        </div>
+
+        <form id="bookingForm" class="sv-form">
+          <div class="sv-summary" id="summaryCard"></div>
+          <div class="sv-error hidden" id="formError"></div>
+          <div class="sv-formrow">
+            <div class="form-group">
+              <label for="nomeCliente">Nome *</label>
+              <input type="text" id="nomeCliente" class="form-control" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+              <label for="telefoneCliente">WhatsApp *</label>
+              <input type="tel" id="telefoneCliente" class="form-control" placeholder="(11) 99999-9999" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="emailCliente">E-mail</label>
+            <input type="email" id="emailCliente" class="form-control" placeholder="seu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="cpfCliente">CPF <span class="sv-opt">(obrigatório para pagamento PIX)</span></label>
+            <input type="text" id="cpfCliente" class="form-control" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off">
+          </div>
+          <div class="form-group" id="cupomWrap">
+            <label for="cupomInput">Cupom de desconto</label>
+            <div class="cupom-row">
+              <input type="text" id="cupomInput" class="form-control" placeholder="Ex.: NAVALHA10" autocomplete="off">
+              <button type="button" class="btn btn-ghost" id="btnAplicarCupom">Aplicar</button>
+            </div>
+            <p class="sv-cupom-msg hidden" id="cupomMsg"></p>
+          </div>
+          <button type="submit" class="btn btn-gold btn-block" id="submitBtn"><i class="fa-solid fa-circle-check"></i> Confirmar agendamento</button>
+        </form>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <div class="modal-overlay hidden" id="filaModal">
+    <div class="modal">
+      <h2><i class="fa-solid fa-hourglass-half"></i> Fila de espera</h2>
+      <p>Sem horários livres? Deixe seus dados e avisaremos quando surgir uma oportunidade.</p>
+      <form id="filaForm">
+        <div class="sv-error hidden" id="filaError"></div>
+        <div class="sv-formrow">
+          <div class="form-group">
+            <label for="filaNome">Nome *</label>
+            <input type="text" id="filaNome" class="form-control" placeholder="Seu nome" required>
+          </div>
+          <div class="form-group">
+            <label for="filaTelefone">WhatsApp *</label>
+            <input type="tel" id="filaTelefone" class="form-control" placeholder="(11) 99999-9999" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filaData">Data preferida</label>
+          <input type="date" id="filaData" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-gold btn-block" id="filaSubmit"><i class="fa-solid fa-hourglass-half"></i> Entrar na fila</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="confirmationModal">
+    <div class="modal">
+      <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+      <h2>Horário reservado!</h2>
+      <p>Seu agendamento foi confirmado. Apresente o número do agendamento na recepção.</p>
+      <div class="resumo" id="confirmResumo"></div>
+      <div class="pix-box hidden" id="confirmPix">
+        <div class="pix-head"><i class="fa-brands fa-pix"></i> Pague por PIX</div>
+        <p class="pix-key" id="pixKey"></p>
+      </div>
+      <div class="pix-box hidden" id="confirmPixAsaas">
+        <div class="pix-head"><i class="fa-brands fa-pix"></i> Pagamento via PIX</div>
+        <p class="pix-status-msg" id="pixStatusMsg">Toque no botão abaixo para gerar o QR Code de pagamento.</p>
+        <div class="pix-qr-wrap hidden" id="pixQrWrap">
+          <img id="pixQrImg" class="pix-qr-img" alt="QR Code PIX">
+          <p class="pix-copia" id="pixCopia"></p>
+          <button type="button" class="btn btn-ghost btn-block" id="btnCopiarPix"><i class="fa-solid fa-copy"></i> Copiar código PIX</button>
+          <p class="pix-status-msg hidden" id="pixConfirmado"><i class="fa-solid fa-circle-check"></i> Pagamento confirmado! Apresente o nº do agendamento na recepção.</p>
+        </div>
+        <button type="button" class="btn btn-gold btn-block" id="btnPagarPix"><i class="fa-brands fa-pix"></i> Pagar com PIX</button>
+      </div>
+      <p class="avaliar-hint hidden" id="avaliarHint">Após o atendimento, avalie sua experiência: <a href="#" id="avaliarLink">avaliar agora</a>.</p>
+      <a href="#" id="confirmWhats" class="whats-btn" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Enviar comprovante no WhatsApp</a>
+      <button class="btn btn-ghost btn-block" onclick="window.location.href='/'">Voltar ao início</button>
+    </div>
+  </div>
+
+  <div class="sv-bar hidden" id="mobileBookingBar">
+    <a href="#" id="mobileWhatsBtn" class="sv-bar-btn sv-bar-wa" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    <button type="button" class="sv-bar-btn sv-bar-agenda" id="mobileAgendarBtn"><i class="fa-solid fa-calendar-check"></i> Agendar</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/barbearia.js"></script>
+</body>
+</html>

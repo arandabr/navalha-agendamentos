@@ -1,0 +1,30 @@
+{
+  "name": "navalha-agendamentos",
+  "version": "1.0.0",
+  "description": "Sistema completo de agendamentos online para barbearias com painel administrativo e página individual por barbearia. Deploy: Vercel + Neon Postgres.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node db.js",
+    "vercel-build": "npm install"
+  },
+  "keywords": [
+    "barbearia",
+    "agendamento",
+    "booking",
+    "barbershop",
+    "postgres",
+    "express",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "connect-pg-simple": "^9.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "pg": "^8.13.1"
+  }
+}

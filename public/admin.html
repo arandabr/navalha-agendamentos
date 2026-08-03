@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel Administrativo | Navalha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css?v=6">
+</head>
+<body>
+
+  <!-- ============ TELA DE LOGIN ============ -->
+  <div id="loginScreen" class="login-screen hidden">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-mark"><i class="fa-solid fa-scissors"></i></span>
+        <h1>NAVALHA<span>.</span></h1>
+      </div>
+      <p class="login-sub">Painel administrativo</p>
+      <div class="form-error hidden" id="loginError"></div>
+      <form id="loginForm">
+      <div class="form-group">
+        <label for="loginUser">Usuário ou link da barbearia</label>
+        <input type="text" id="loginUser" class="form-control" placeholder="admin ou /b/sua-barbearia" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label for="loginPass">Senha</label>
+        <input type="password" id="loginPass" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+        <button type="submit" class="btn btn-gold btn-block">Entrar</button>
+      </form>
+      <a href="/" class="login-back"><i class="fa-solid fa-arrow-left"></i> Voltar ao site</a>
+    </div>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div id="adminApp" class="admin hidden">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-scissors"></i></span>
+        <span class="logo-text">NAVALHA<span>.</span></span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-view="dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+        <a class="nav-item" data-view="agenda"><i class="fa-solid fa-calendar-days"></i><span>Agenda</span></a>
+        <a class="nav-item" data-view="agendamentos"><i class="fa-solid fa-list-check"></i><span>Agendamentos</span></a>
+        <a class="nav-item" data-view="fila"><i class="fa-solid fa-person-circle-question"></i><span>Fila de espera</span></a>
+        <a class="nav-item" data-view="relatorios"><i class="fa-solid fa-chart-column"></i><span>Relatórios</span></a>
+        <a class="nav-item" data-view="servicos"><i class="fa-solid fa-scissors"></i><span>Serviços</span></a>
+        <a class="nav-item" data-view="profissionais"><i class="fa-solid fa-user-tie"></i><span>Profissionais</span></a>
+        <a class="nav-item" data-view="horarios"><i class="fa-solid fa-clock"></i><span>Horários</span></a>
+        <a class="nav-item" data-view="cupons"><i class="fa-solid fa-tags"></i><span>Cupons</span></a>
+        <a class="nav-item" data-view="fidelidade"><i class="fa-solid fa-gift"></i><span>Fidelidade</span></a>
+        <a class="nav-item" data-view="lembretes"><i class="fa-solid fa-bell"></i><span>Lembretes</span></a>
+        <a class="nav-item" data-view="barbearia"><i class="fa-solid fa-store"></i><span>Minha barbearia</span></a>
+        <a class="nav-item admin-only" data-view="barbearias"><i class="fa-solid fa-building"></i><span>Todas as barbearias</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <button class="btn btn-outline btn-block admin-only" id="btnBackup" style="margin-bottom:8px"><i class="fa-solid fa-database"></i> Backup do banco</button>
+        <button class="btn btn-outline btn-block" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <select id="barbeariaSelect" class="form-control select-sm" title="Selecionar barbearia"></select>
+          <a href="/" class="btn btn-ghost btn-sm" title="Ver site"><i class="fa-solid fa-globe"></i></a>
+          <span class="admin-name" id="adminName"></span>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <!-- ===== Dashboard ===== -->
+        <section class="view" id="view-dashboard">
+          <div class="stat-grid">
+            <div class="stat-card"><i class="fa-solid fa-calendar-day stat-icon gold"></i><div><span>Agendamentos hoje</span><strong id="stHoje">0</strong></div></div>
+            <div class="stat-card"><i class="fa-solid fa-bell stat-icon blue"></i><div><span>Pendentes hoje</span><strong id="stPendentes">0</strong></div></div>
+            <div class="stat-card"><i class="fa-solid fa-calendar-days stat-icon purple"></i><div><span>Este mês</span><strong id="stMes">0</strong></div></div>
+            <div class="stat-card"><i class="fa-solid fa-sack-dollar stat-icon green"></i><div><span>Receita concluída (mês)</span><strong id="stReceita">R$ 0,00</strong></div></div>
+            <div class="stat-card"><i class="fa-solid fa-users stat-icon orange"></i><div><span>Clientes únicos</span><strong id="stClientes">0</strong></div></div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="panel">
+              <h3 class="panel-title">Agendamentos dos últimos 7 dias</h3>
+              <div class="chart" id="weekChart"></div>
+            </div>
+            <div class="panel">
+              <h3 class="panel-title">Próximos agendamentos</h3>
+              <div id="proximosList" class="list-compact"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Agenda visual ===== -->
+        <section class="view hidden" id="view-agenda">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Agenda do dia</h3>
+              <div class="filters">
+                <button class="btn btn-ghost btn-sm" id="btnAgendaHoje"><i class="fa-solid fa-crosshairs"></i> Hoje</button>
+                <button class="btn btn-ghost btn-sm" id="btnAgendaVoltar"><i class="fa-solid fa-chevron-left"></i></button>
+                <input type="date" id="agendaData" class="form-control input-sm">
+                <button class="btn btn-ghost btn-sm" id="btnAgendaAvancar"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="btn btn-danger btn-sm" id="btnBloquearDia"><i class="fa-solid fa-lock"></i> Bloquear horário</button>
+              </div>
+            </div>
+            <p class="panel-sub" id="agendaSub"></p>
+            <div id="agendaGrid" class="agenda-grid"></div>
+          </div>
+        </section>
+
+        <!-- ===== Agendamentos ===== -->
+        <section class="view hidden" id="view-agendamentos">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Gerenciar agendamentos</h3>
+              <div class="filters">
+                <input type="date" id="filtroData" class="form-control input-sm">
+                <select id="filtroStatus" class="form-control input-sm">
+                  <option value="">Todos os status</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="confirmado">Confirmado</option>
+                  <option value="em_atendimento">Em atendimento</option>
+                  <option value="concluido">Concluído</option>
+                  <option value="ausente">Ausente</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+                <button class="btn btn-blue btn-sm" id="btnExportCsv"><i class="fa-solid fa-file-csv"></i> Exportar CSV</button>
+                <button class="btn btn-gold btn-sm" id="btnNovoAgendamento"><i class="fa-solid fa-plus"></i> Novo</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Data</th><th>Hora</th><th>Valor</th><th>Status</th><th class="th-actions">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="agendamentosBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Fila de espera ===== -->
+        <section class="view hidden" id="view-fila">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Fila de espera</h3>
+              <select id="filaStatus" class="form-control input-sm">
+                <option value="">Todos</option>
+                <option value="aguardando">Aguardando</option>
+                <option value="contatado">Contatado</option>
+                <option value="agendado">Agendado</option>
+                <option value="descartado">Descartado</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr><th>Cliente</th><th>Telefone</th><th>Serviço</th><th>Data preferida</th><th>Status</th><th class="th-actions">Ações</th></tr>
+                </thead>
+                <tbody id="filaBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Relatórios ===== -->
+        <section class="view hidden" id="view-relatorios">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Relatórios financeiros</h3>
+              <div class="filters">
+                <input type="date" id="relDe" class="form-control input-sm">
+                <span class="filter-sep">até</span>
+                <input type="date" id="relAte" class="form-control input-sm">
+                <button class="btn btn-gold btn-sm" id="btnRelGerar"><i class="fa-solid fa-chart-line"></i> Gerar</button>
+                <button class="btn btn-blue btn-sm" id="btnRelCsv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+              </div>
+            </div>
+            <div class="stat-grid rel-stats" id="relStats"></div>
+            <div class="dash-grid">
+              <div class="panel panel-inner">
+                <h3 class="panel-title">Por serviço</h3>
+                <div class="table-wrap"><table class="table"><thead><tr><th>Serviço</th><th>Qtd</th><th>Receita</th></tr></thead><tbody id="relServicoBody"></tbody></table></div>
+              </div>
+              <div class="panel panel-inner">
+                <h3 class="panel-title">Por profissional</h3>
+                <div class="table-wrap"><table class="table"><thead><tr><th>Profissional</th><th>Qtd</th><th>Receita</th></tr></thead><tbody id="relProfBody"></tbody></table></div>
+              </div>
+            </div>
+            <div class="panel panel-inner" style="margin-top:22px">
+              <h3 class="panel-title">Por dia</h3>
+              <div class="table-wrap"><table class="table"><thead><tr><th>Data</th><th>Qtd</th><th>Receita concluída</th></tr></thead><tbody id="relDiaBody"></tbody></table></div>
+            </div>
+            <div class="panel panel-inner" style="margin-top:22px">
+              <h3 class="panel-title">A confirmar / pendentes no período</h3>
+              <div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>Cliente</th><th>Serviço</th><th>Data</th><th>Hora</th><th>Valor</th><th>Status</th></tr></thead><tbody id="relPendBody"></tbody></table></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Serviços ===== -->
+        <section class="view hidden" id="view-servicos">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Serviços</h3>
+              <button class="btn btn-gold btn-sm" id="btnNovoServico"><i class="fa-solid fa-plus"></i> Novo serviço</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr><th>Serviço</th><th>Descrição</th><th>Duração</th><th>Preço</th><th>Ativo</th><th class="th-actions">Ações</th></tr>
+                </thead>
+                <tbody id="servicosBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Profissionais ===== -->
+        <section class="view hidden" id="view-profissionais">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Profissionais</h3>
+              <button class="btn btn-gold btn-sm" id="btnNovoProfissional"><i class="fa-solid fa-plus"></i> Novo profissional</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr><th>Nome</th><th>Cargo</th><th>Ativo</th><th class="th-actions">Ações</th></tr>
+                </thead>
+                <tbody id="profissionaisBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Horários ===== -->
+        <section class="view hidden" id="view-horarios">
+          <div class="panel">
+            <h3 class="panel-title">Horários de funcionamento</h3>
+            <p class="panel-sub">Defina em quais dias e horários a barbearia atende. Clientes só veem horários dentro deste expediente.</p>
+            <div id="horariosList"></div>
+            <button class="btn btn-gold" id="btnSalvarHorarios"><i class="fa-solid fa-floppy-disk"></i> Salvar horários</button>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Bloqueios e folgas</h3>
+              <button class="btn btn-gold btn-sm" id="btnNovoBloqueio"><i class="fa-solid fa-plus"></i> Novo bloqueio</button>
+            </div>
+            <p class="panel-sub">Dias inteiros ou trechos de horário ficam indisponíveis para agendamento.</p>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Data</th><th>Horário</th><th>Motivo</th><th class="th-actions">Ações</th></tr></thead>
+                <tbody id="bloqueiosBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Minha barbearia ===== -->
+        <section class="view hidden" id="view-barbearia">
+          <div class="panel">
+            <h3 class="panel-title">Perfil da barbearia</h3>
+            <form id="barbeariaForm">
+              <div class="form-row-3">
+                <div class="form-group"><label>Nome *</label><input type="text" id="bbNome" class="form-control" required></div>
+                <div class="form-group"><label>Slug (link da página)</label><input type="text" id="bbSlug" class="form-control">
+                  <p class="slug-preview"><i class="fa-solid fa-link"></i> <span id="bbSlugFull"></span></p>
+                  <p class="slug-status" id="bbSlugStatus"></p>
+                </div>
+                <div class="form-group"><label>Avaliação</label><input type="number" id="bbAvaliacao" class="form-control" step="0.1" min="0" max="5"></div>
+              </div>
+              <div class="form-group"><label>Slogan</label><input type="text" id="bbTagline" class="form-control"></div>
+              <div class="form-group"><label>Descrição</label><textarea id="bbDescricao" class="form-control" rows="4"></textarea></div>
+              <div class="form-row-3">
+                <div class="form-group"><label>Endereço</label><input type="text" id="bbEndereco" class="form-control"></div>
+                <div class="form-group"><label>Cidade</label><input type="text" id="bbCidade" class="form-control"></div>
+                <div class="form-group"><label>Horário (texto)</label><input type="text" id="bbHorarioTexto" class="form-control"></div>
+              </div>
+              <div class="form-row-3">
+                <div class="form-group"><label>Telefone</label><input type="text" id="bbTelefone" class="form-control"></div>
+                <div class="form-group"><label>WhatsApp (com DDI)</label><input type="text" id="bbWhatsapp" class="form-control" placeholder="5511999999999"></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="bbEmail" class="form-control"></div>
+              </div>
+              <div class="form-row-3">
+                <div class="form-group"><label>Instagram</label><input type="text" id="bbInstagram" class="form-control" placeholder="@sua_barbearia"></div>
+                <div class="form-group"><label>Foto (URL)</label><input type="text" id="bbImagem" class="form-control"></div>
+                <div class="form-group"><label>Capa (URL)</label><input type="text" id="bbCapa" class="form-control"></div>
+              </div>
+              <div class="form-row-3">
+                <div class="form-group"><label>Chave PIX</label><input type="text" id="bbPix" class="form-control" placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"></div>
+                <div class="form-group"><label>Nova senha de acesso</label><input type="password" id="bbSenha" class="form-control" placeholder="Deixe em branco para não alterar" autocomplete="new-password"></div>
+                <div class="form-group"><label>Cor primária</label><input type="color" id="bbCor" class="form-control color-input" value="#c9a227"></div>
+              </div>
+              <div class="form-row-3">
+                <div class="form-group" style="display:flex;align-items:flex-end;gap:10px;">
+                  <label class="switch" style="margin-bottom:12px;">
+                    <input type="checkbox" id="bbAtiva" checked>
+                    <span class="slider"></span>
+                    <span>Barbearia ativa no site</span>
+                  </label>
+                </div>
+                <div class="form-group" id="bbDonoInfo">
+                  <label>Seu acesso ao painel</label>
+                  <p class="slug-note" style="margin:0">Faça login em <strong>/admin</strong> com o link da sua página (<code id="bbSlugAcesso"></code>) e sua senha.</p>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Salvar alterações</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== Cupons ===== -->
+        <section class="view hidden" id="view-cupons">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Cupons de desconto</h3>
+              <button class="btn btn-gold btn-sm" id="btnNovoCupom"><i class="fa-solid fa-plus"></i> Novo cupom</button>
+            </div>
+            <p class="panel-sub">Crie códigos de desconto para os clientes usarem na página de agendamento.</p>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Código</th><th>Desconto</th><th>Validade</th><th>Usos</th><th>Status</th><th class="th-actions">Ações</th></tr></thead>
+                <tbody id="cuponsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Fidelidade ===== -->
+        <section class="view hidden" id="view-fidelidade">
+          <div class="panel">
+            <h3 class="panel-title">Programa de fidelidade</h3>
+            <p class="panel-sub">A cada atendimento concluído o cliente ganha 1 visita. Ao atingir o prêmio, ofereça o serviço grátis.</p>
+            <form id="fidelidadeForm" class="fid-config">
+              <label class="switch"><input type="checkbox" id="fdAtiva"><span class="slider"></span><span>Fidelidade ativa</span></label>
+              <div class="form-group" style="max-width:220px;margin:12px 0 0">
+                <label>Prêmio a cada (visitas)</label>
+                <input type="number" id="fdPremio" class="form-control" min="1" value="10">
+              </div>
+              <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Salvar configuração</button>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Clientes fidelizados</h3>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Cliente</th><th>WhatsApp</th><th>Visitas</th><th>Progresso</th><th class="th-actions">Ações</th></tr></thead>
+                <tbody id="fidelidadeBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Lembretes ===== -->
+        <section class="view hidden" id="view-lembretes">
+          <div class="panel">
+            <h3 class="panel-title">Lembretes automáticos</h3>
+            <p class="panel-sub">O painel detecta sozinho os agendamentos que acontecerão nas próximas horas e ainda não foram lembrados. Envie pelo WhatsApp com um clique.</p>
+            <form id="lembretesForm" class="fid-config">
+              <label class="switch"><input type="checkbox" id="lbAtiva"><span class="slider"></span><span>Lembretes ativos</span></label>
+              <div class="form-group" style="max-width:220px;margin:12px 0 0">
+                <label>Lembrar X horas antes</label>
+                <input type="number" id="lbHoras" class="form-control" min="1" value="24">
+              </div>
+              <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Salvar configuração</button>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Pendentes de lembrete</h3>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Cliente</th><th>Serviço</th><th>Data</th><th>Hora</th><th class="th-actions">Ações</th></tr></thead>
+                <tbody id="lembretesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Todas as barbearias ===== -->
+        <section class="view hidden" id="view-barbearias">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Barbearias cadastradas</h3>
+              <button class="btn btn-gold btn-sm" id="btnNovaBarbearia"><i class="fa-solid fa-plus"></i> Nova barbearia</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr><th>Barbearia</th><th>Cidade</th><th>Slug</th><th>Hoje</th><th>Status</th><th class="th-actions">Ações</th></tr>
+                </thead>
+                <tbody id="todasBarbeariasBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ MODAL GENÉRICO ============ -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal" id="modalBox"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/admin.js?v=9"></script>
+</body>
+</html>

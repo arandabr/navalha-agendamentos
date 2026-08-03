@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Avaliar atendimento | NAVALHA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body>
+
+  <div class="av-pg">
+    <header class="sv-top">
+      <div class="container sv-top-inner">
+        <a href="/" class="sv-back"><i class="fa-solid fa-arrow-left"></i><span>Início</span></a>
+        <span class="sv-brand">NAVALHA</span>
+      </div>
+    </header>
+
+    <main class="container av-pg-inner">
+
+      <div class="page-loading" id="pageLoading">
+        <i class="fa-solid fa-circle-notch"></i>Carregando...
+      </div>
+
+      <div id="avError" class="av-card hidden">
+        <div class="av-card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+        <h1 id="avErrorTitle">Link inválido</h1>
+        <p id="avErrorMsg">Não foi possível localizar este agendamento.</p>
+        <a href="/" class="btn btn-gold"><i class="fa-solid fa-house"></i> Voltar ao início</a>
+      </div>
+
+      <div id="avForm" class="av-card hidden">
+        <h1>Como foi seu atendimento?</h1>
+        <p class="av-sub">Na <strong id="avBarbearia"></strong> · <span id="avServico"></span></p>
+
+        <div class="av-stars" id="avStars">
+          <i class="fa-regular fa-star" data-n="1"></i>
+          <i class="fa-regular fa-star" data-n="2"></i>
+          <i class="fa-regular fa-star" data-n="3"></i>
+          <i class="fa-regular fa-star" data-n="4"></i>
+          <i class="fa-regular fa-star" data-n="5"></i>
+        </div>
+
+        <form id="avaliacaoForm">
+          <div class="form-group">
+            <label for="avNome">Seu nome</label>
+            <input type="text" id="avNome" class="form-control" placeholder="Como você quer ser identificado?">
+          </div>
+          <div class="form-group">
+            <label for="avComentario">Conte como foi (opcional)</label>
+            <textarea id="avComentario" class="form-control" rows="4" placeholder="Atendimento, ambiente, pontualidade..."></textarea>
+          </div>
+          <div class="av-error hidden" id="avErrorBox"></div>
+          <button type="submit" class="btn btn-gold btn-block" id="avSubmit"><i class="fa-solid fa-star"></i> Enviar avaliação</button>
+        </form>
+      </div>
+
+      <div id="avOk" class="av-card hidden">
+        <div class="av-card-icon ok"><i class="fa-solid fa-check"></i></div>
+        <h1>Obrigado!</h1>
+        <p>Sua avaliação foi registrada e ajuda outros clientes na plataforma.</p>
+        <a href="/" class="btn btn-gold"><i class="fa-solid fa-house"></i> Voltar ao início</a>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/avaliacao.js"></script>
+</body>
+</html>

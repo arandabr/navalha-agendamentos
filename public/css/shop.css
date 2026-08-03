@@ -1,0 +1,397 @@
+/* ================================================================
+   NAVALHA — Página da barbearia
+   Visual minimalista, profissional e mobile-first
+   ================================================================ */
+
+/* ---------- Barra superior ---------- */
+.sv-top {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(11, 11, 14, 0.86);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.sv-top-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; height: 54px;
+}
+.sv-back, .sv-painel {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--text-dim); font-size: 0.84rem; font-weight: 500;
+  padding: 8px 4px; border-radius: 8px; white-space: nowrap;
+  transition: color 0.15s;
+}
+.sv-back:hover, .sv-painel:hover { color: var(--gold); }
+.sv-back i, .sv-painel i { width: 16px; text-align: center; }
+.sv-brand {
+  font-family: var(--font-display); letter-spacing: 3px; font-size: 1.05rem;
+  color: var(--text-faint);
+}
+
+/* ---------- Cabeçalho (cover + nome) ---------- */
+.sv-hero { position: relative; min-height: 210px; }
+.sv-cover {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+.sv-cover::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(11, 11, 14, 0.55), rgba(11, 11, 14, 0.94));
+}
+.sv-hero-inner {
+  position: relative;
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 64px 0 24px;
+}
+.sv-head { display: flex; align-items: center; gap: 15px; }
+.sv-avatar {
+  width: 72px; height: 72px; flex-shrink: 0;
+  border-radius: 14px;
+  background-size: cover; background-position: center;
+  border: 2px solid var(--gold);
+  box-shadow: var(--shadow-sm);
+}
+.sv-head-text { min-width: 0; }
+.sv-head-text h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: 1px; line-height: 1;
+}
+.sv-tagline { color: var(--text-dim); font-size: 0.95rem; margin-top: 5px; }
+.sv-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.sv-actions .btn { flex: 1 1 45%; min-width: 0; padding: 12px 14px; }
+
+/* ---------- Faixa de informações ---------- */
+.sv-facts { border-block: 1px solid var(--border); background: var(--bg-soft); }
+.sv-facts-inner {
+  display: grid; grid-template-columns: 1fr;
+  gap: 10px; padding: 16px 0;
+}
+.sv-fact {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text-dim); font-size: 0.87rem; min-width: 0;
+}
+.sv-fact i { color: var(--gold); width: 18px; text-align: center; flex-shrink: 0; }
+.sv-fact span, .sv-fact b { overflow-wrap: anywhere; }
+.sv-fact b { color: var(--text); font-weight: 600; margin-right: 4px; }
+
+/* ---------- Layout principal ---------- */
+.sv-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 34px; padding: 32px 0 44px;
+}
+.sv-col { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
+
+.sv-sec-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.93rem; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; color: var(--text);
+  margin-bottom: 14px;
+}
+.sv-sec-title i { color: var(--gold); font-size: 0.95rem; }
+
+/* ---------- Serviços ---------- */
+.sv-serv {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto 22px;
+  align-items: center; gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, transform 0.15s;
+}
+.sv-serv:hover { border-color: rgba(201, 162, 39, 0.45); transform: translateX(2px); }
+.sv-serv.selected { border-color: var(--gold); background: rgba(201, 162, 39, 0.05); }
+.sv-serv-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--gold); font-size: 1rem;
+}
+.sv-serv-body { min-width: 0; }
+.sv-serv-name { font-weight: 600; font-size: 0.96rem; }
+.sv-serv-desc { color: var(--text-dim); font-size: 0.82rem; }
+.sv-serv-meta { text-align: right; white-space: nowrap; }
+.sv-serv-price { color: var(--gold); font-weight: 700; font-size: 1rem; }
+.sv-serv-dur { color: var(--text-faint); font-size: 0.76rem; }
+.sv-serv-check {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border); border-radius: 50%;
+  display: grid; place-items: center;
+  color: transparent; font-size: 0.65rem;
+  transition: all 0.15s;
+}
+.sv-serv.selected .sv-serv-check { background: var(--gold); border-color: var(--gold); color: #17120a; }
+
+/* ---------- Profissionais ---------- */
+.sv-prof-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.sv-prof {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 9px 15px;
+  font-size: 0.87rem; color: var(--text-dim);
+  cursor: pointer; transition: all 0.18s;
+}
+.sv-prof:hover { border-color: rgba(201, 162, 39, 0.5); }
+.sv-prof.selected { border-color: var(--gold); color: var(--text); background: rgba(201, 162, 39, 0.08); }
+.sv-prof-ini {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  display: grid; place-items: center;
+  color: var(--gold); font-size: 0.7rem; font-weight: 700;
+}
+.sv-prof small { color: var(--text-faint); font-weight: 400; }
+
+/* ---------- Agendamento ---------- */
+.sv-book {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: 70px;
+  min-width: 0;
+}
+.sv-book-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;
+}
+.sv-book-title i { color: var(--gold); }
+.sv-book-sub { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 18px; }
+
+/* Datas */
+.sv-date {
+  display: flex; gap: 8px; overflow-x: auto;
+  scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+  padding: 2px 2px 12px; margin-bottom: 16px;
+  scrollbar-width: none;
+  min-width: 0; max-width: 100%;
+}
+.sv-date::-webkit-scrollbar { display: none; }
+.sv-pill {
+  flex-shrink: 0; scroll-snap-align: start;
+  min-width: 64px;
+  background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px 6px; text-align: center;
+  cursor: pointer; transition: all 0.18s;
+}
+.sv-pill:hover { border-color: rgba(201, 162, 39, 0.5); }
+.sv-pill.selected { border-color: var(--gold); background: rgba(201, 162, 39, 0.1); box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12); }
+.sv-pill.closed { opacity: 0.4; cursor: not-allowed; }
+.sv-pill.closed:hover { border-color: var(--border); }
+.sv-pill .d { font-size: 0.7rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+.sv-pill .n { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.1; color: var(--text); }
+.sv-pill .m { font-size: 0.7rem; color: var(--text-faint); }
+
+/* Horários */
+.sv-time {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 8px; margin-bottom: 18px;
+  min-width: 0;
+}
+.sv-slot {
+  padding: 12px 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 10px;
+  text-align: center; font-size: 0.92rem; font-weight: 600;
+  color: var(--text); transition: all 0.15s;
+}
+.sv-slot:hover { border-color: rgba(201, 162, 39, 0.6); }
+.sv-slot.selected { background: var(--gold); border-color: var(--gold); color: #17120a; box-shadow: 0 6px 18px rgba(201, 162, 39, 0.35); }
+.sv-slot:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.sv-empty {
+  text-align: center;
+  color: var(--text-faint);
+  background: var(--surface-2);
+  border: 1px dashed var(--border); border-radius: 10px;
+  padding: 18px 14px; font-size: 0.88rem; margin-bottom: 18px;
+}
+.sv-empty i { color: var(--gold); display: block; font-size: 1.3rem; margin-bottom: 8px; }
+
+/* Resumo */
+.sv-summary {
+  background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 16px; font-size: 0.88rem;
+}
+.sv-summary .row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 4px 0; color: var(--text-dim);
+}
+.sv-summary .row strong { color: var(--text); font-weight: 600; text-align: right; }
+.sv-summary .row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 10px; color: var(--text); }
+.sv-summary .row.total strong { color: var(--gold); font-size: 1.05rem; }
+
+.sv-error {
+  background: rgba(241, 90, 90, 0.1);
+  border: 1px solid rgba(241, 90, 90, 0.4);
+  color: var(--red);
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 0.85rem; margin-bottom: 14px;
+}
+.sv-formrow { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+/* ---------- Barra de agendamento fixa (mobile) ---------- */
+.sv-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 120;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  background: rgba(13, 13, 17, 0.94);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 26px rgba(0, 0, 0, 0.35);
+}
+body#shopPage { padding-bottom: 78px; }
+.sv-bar-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 12px; padding: 14px 10px;
+  font-size: 0.9rem; font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text);
+  text-decoration: none; white-space: nowrap;
+}
+.sv-bar-btn:active { transform: scale(0.97); }
+.sv-bar-wa { color: #25d366; border-color: rgba(37, 211, 102, 0.4); }
+.sv-bar-agenda {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  color: #17120a; border-color: transparent;
+  box-shadow: 0 8px 20px rgba(201, 162, 39, 0.3);
+}
+
+/* ---------- Responsivo (mobile-first, upgrade) ---------- */
+
+@media (min-width: 560px) {
+  .sv-facts-inner { grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+  .sv-formrow { grid-template-columns: 1fr 1fr; }
+  .sv-time { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+}
+
+@media (min-width: 768px) {
+  .sv-hero { min-height: 230px; }
+  .sv-avatar { width: 84px; height: 84px; }
+  .sv-head-text h1 { font-size: clamp(2.2rem, 4.5vw, 3rem); }
+  .sv-actions .btn { flex: none; padding: 13px 22px; }
+  .sv-facts-inner { display: flex; flex-wrap: wrap; gap: 14px 28px; padding: 18px 0; }
+  .sv-serv { padding: 16px 18px; }
+  .sv-book { padding: 26px; }
+  .sv-book-title { font-size: 1.3rem; }
+}
+
+@media (min-width: 992px) {
+  .sv-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; padding: 48px 0 60px; }
+  .sv-book { position: sticky; top: 74px; }
+  .sv-hero-inner { flex-direction: row; align-items: flex-end; justify-content: space-between; padding: 72px 0 32px; }
+  .sv-bar { display: none; }
+  body#shopPage { padding-bottom: 0; }
+  .sv-time { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+}
+
+/* ---------- Avalia��es ---------- */
+.av-resumo { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding: 14px 16px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 12px; }
+.av-media { display: flex; align-items: baseline; gap: 8px; }
+.av-media strong { font-size: 2rem; color: var(--gold); }
+.av-media span { font-size: 0.8rem; color: var(--text-dim); }
+.av-media-stars { color: var(--gold); font-size: 0.9rem; }
+.av-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.av-item:last-child { border-bottom: none; }
+.av-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.av-name { font-weight: 600; font-size: 0.92rem; }
+.av-name i { color: var(--gold); margin-right: 6px; }
+.av-stars { color: var(--gold); font-size: 0.8rem; }
+.av-date { display: block; font-size: 0.75rem; color: var(--text-faint); margin-top: 2px; }
+.av-com { font-size: 0.9rem; color: var(--text-dim); margin-top: 6px; }
+
+/* ---------- PIX / fila / avaliar ---------- */
+.pix-box { background: var(--bg-soft); border: 1px dashed var(--border); border-radius: 10px; padding: 14px; margin: 14px 0; text-align: left; }
+.pix-head { font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.pix-head i { margin-right: 6px; }
+.pix-code { font-family: Consolas, monospace; font-size: 0.72rem; color: var(--text-dim); word-break: break-all; max-height: 90px; overflow-y: auto; margin-bottom: 10px; }
+.pix-key { font-weight: 700; font-size: 1.05rem; color: var(--green); word-break: break-all; }
+.pix-status-msg { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 10px; }
+.pix-qr-wrap { text-align: center; margin: 6px 0 12px; }
+.pix-qr-img { width: 190px; height: 190px; border-radius: 10px; border: 1px solid var(--border); background: #fff; padding: 8px; object-fit: contain; margin: 0 auto 10px; display: block; }
+.pix-copia { font-family: Consolas, monospace; font-size: 0.7rem; color: var(--text-dim); word-break: break-all; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin: 0 0 10px; text-align: left; max-height: 70px; overflow-y: auto; }
+.pix-status-msg .fa-circle-check { color: var(--green); margin-right: 6px; }
+.avaliar-hint { margin: 12px 0 6px; font-size: 0.85rem; color: var(--text-dim); }
+.avaliar-hint a { color: var(--gold); font-weight: 600; }
+.sv-empty { display: flex; flex-direction: column; align-items: center; }
+#btnFila { margin-top: 14px; }
+
+/* ---------- P�gina de avalia��o ---------- */
+.av-pg { min-height: 100vh; background: var(--bg); }
+.av-pg-inner { max-width: 560px; padding-top: 48px; padding-bottom: 72px; }
+.av-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px 32px; text-align: center; box-shadow: var(--shadow); }
+.av-card h1 { font-family: var(--font-display); font-size: 1.9rem; letter-spacing: 1px; margin-bottom: 8px; }
+.av-card .av-sub { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 6px; }
+.av-card .av-sub strong { color: var(--text); }
+.av-card-icon { width: 64px; height: 64px; margin: 0 auto 16px; display: grid; place-items: center; border-radius: 50%; background: rgba(241, 90, 90, 0.12); color: var(--red); font-size: 1.5rem; }
+.av-card-icon.ok { background: rgba(61, 220, 132, 0.12); color: var(--green); }
+.av-card p { color: var(--text-dim); margin-bottom: 18px; }
+.av-stars { display: flex; justify-content: center; gap: 8px; font-size: 2rem; color: var(--gold); margin: 22px 0; cursor: pointer; }
+.av-stars i { transition: transform 0.15s, color 0.15s; }
+.av-stars i:hover { transform: scale(1.15); }
+.av-error { background: rgba(241, 90, 90, 0.1); border: 1px solid rgba(241, 90, 90, 0.4); color: var(--red); padding: 10px 14px; border-radius: 8px; margin: 10px 0; font-size: 0.85rem; }
+.av-pg .form-group { text-align: left; margin-bottom: 14px; }
+.av-pg textarea { resize: vertical; }
+
+/* ---------- Cupom de desconto ---------- */
+.cupom-row { display: flex; gap: 8px; }
+.cupom-row .form-control { flex: 1; }
+.sv-cupom-msg { font-size: 0.8rem; margin-top: 6px; }
+.sv-cupom-msg.ok { color: var(--green); }
+.sv-cupom-msg.err { color: var(--red); }
+.sv-cupom-msg i { margin-right: 4px; }
+
+/* ---------- Área do cliente ---------- */
+.cl-pg .av-card { text-align: left; }
+.cl-card { margin-top: 18px; }
+.cl-card h2 { font-family: var(--font-display); letter-spacing: 1px; margin-bottom: 10px; }
+.cl-fid { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.cl-fid:last-child { border-bottom: none; }
+.cl-fid-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; }
+.cl-fid-head span { color: var(--text-dim); font-size: 0.8rem; }
+.cl-fid-text { font-size: 0.82rem; color: var(--text-dim); margin-top: 8px; }
+.cl-fid-text strong { color: var(--gold); }
+.cl-ag { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.cl-ag:last-child { border-bottom: none; }
+.cl-ag-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.cl-ag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 0.85rem; color: var(--text-dim); }
+.cl-ag-grid i { color: var(--gold); width: 16px; text-align: center; margin-right: 6px; }
+.cl-ag-id { font-size: 0.74rem; color: var(--text-faint); margin: 8px 0 10px; }
+.cl-empty { color: var(--text-faint); text-align: center; padding: 16px 0; font-size: 0.88rem; }
+.cl-card .btn-danger { margin-top: 4px; }
+
+/* ---------- Modal de confirmação (área do cliente) ---------- */
+.modal .cancel-icon { width: 74px; height: 74px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center; background: rgba(241, 90, 90, 0.12); border: 2px solid var(--red); color: var(--red); font-size: 1.8rem; }
+.modal .confirm-text { color: var(--text-dim); margin: 8px 0 18px; font-size: 0.92rem; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.modal-actions .btn { flex: 1; }
+.btn-danger { background: rgba(241, 90, 90, 0.12); border: 1px solid rgba(241, 90, 90, 0.4); color: var(--red); }
+.btn-danger:hover { background: rgba(241, 90, 90, 0.2); }
+
+/* ---------- Barra de progresso de fidelidade ---------- */
+.fid-bar { height: 8px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.fid-bar div { height: 100%; background: linear-gradient(90deg, var(--gold-soft), var(--gold)); border-radius: 20px; transition: width 0.3s; }
+.fid-rest { font-size: 0.74rem; color: var(--text-faint); }
+
+/* ---------- Status de agendamento (área do cliente) ---------- */
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; white-space: nowrap; }
+.status-pendente { background: rgba(245, 166, 35, 0.14); color: #f5a623; }
+.status-confirmado { background: rgba(61, 155, 233, 0.14); color: #3d9be9; }
+.status-em_atendimento { background: rgba(167, 139, 250, 0.2); color: #a78bfa; }
+.status-concluido { background: rgba(61, 220, 132, 0.14); color: var(--green); }
+.status-cancelado { background: rgba(241, 90, 90, 0.14); color: var(--red); }
+.status-ausente { background: rgba(160, 160, 175, 0.14); color: var(--text-dim); }
+.status-pago { background: rgba(61, 220, 132, 0.16); color: var(--green); }
+.cl-ag-badges { display: inline-flex; gap: 6px; align-items: center; }
