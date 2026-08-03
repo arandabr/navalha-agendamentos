@@ -263,7 +263,8 @@ const ASAAS_URLS = {
   production: 'https://www.asaas.com/api/v3'
 };
 const asaasKey = (b) => (b && b.asaas_api_key) || process.env.ASAAS_API_KEY || '';
-const asaasBase = (b) => ASAAS_URLS[((b && b.asaas_mode) || process.env.ASAAS_MODE || 'sandbox') === 'production' ? 'production' : 'sandbox'];
+const asaasModeEfetivo = (b) => (b && b.asaas_api_key && b.asaas_mode) ? b.asaas_mode : (process.env.ASAAS_MODE || 'sandbox');
+const asaasBase = (b) => ASAAS_URLS[asaasModeEfetivo(b) === 'production' ? 'production' : 'sandbox'];
 
 async function criarCobrancaPix(b, ag) {
   const valor = Number(ag.preco) || 0;
