@@ -196,7 +196,8 @@
     fidelidade: 'Fidelidade',
     lembretes: 'Lembretes',
     barbearia: 'Minha barbearia',
-    barbearias: 'Todas as barbearias'
+    barbearias: 'Todas as barbearias',
+    saldos: 'Saldo e saques'
   };
 
   function mudarView(view) {
@@ -222,6 +223,7 @@
     if (view === 'lembretes') carregarLembretes();
     if (view === 'barbearia') carregarFormBarbearia();
     if (view === 'barbearias') carregarTodasBarbearias();
+    if (view === 'saldos') carregarSaldos();
   }
 
   /* ================= DASHBOARD ================= */
@@ -1130,6 +1132,77 @@
       `).join('');
     } catch (er) { toast(er.message, 'error'); }
   }
+
+  async function carregarSaldos() {
+    try {
+      const d = await api('/api/admin/barbearias/' + state.barbeariaId + '/saques');
+      $('saldoValor').textContent = fmtPreco(d.saldo);
+      if (state.dono) {
+        $('saqueFormRow').classList.remove('hidden');
+      } else {
+        $('saqueFormRow').classList.add('hidden');
+        const lista = await api('/api/admin/barbearias');
+        const saques = await api('/api/admin/saques');
+        $('saldosBarbearias').innerHTML = lista.map((b) => `
+          <tr>
+            <td><strong>${esc(b.nome)}</strong></td>
+            <td>${Number(b.asaas_split_percent) > 0 ? Number(b.asaas_split_percent) + '%' : '—'}</td>
+            <td><strong style="color:var(--green)">${fmtPreco(b.saldo)}</strong></td>
+          </tr>
+        `).join('');
+        $('saquesList').innerHTML = saques.map((s) => `
+          <tr>
+            <td>#${s.id}</td>
+            <td class="admin-only"><strong>${esc(s.barbearia_nome)}</strong></td>
+            <td>${fmtPreco(s.valor)}</td>
+            <td style="color:var(--text-dim)">${esc(s.pix_chave)}</td>
+            <td>${badgeSaque(s.status)}</td>
+            <td class="admin-only td-actions">${s.status === 'pendente'
+              ? `<button class="btn btn-gold btn-sm" onclick="AdminSaldos.processar(${s.id})"><i class="fa-solid fa-paper-plane"></i> Transferir</button>`
+              : ''}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="6">Nenhum saque registrado.</td></tr>';
+        $('btnSolicitarSaque').style.display = 'none';
+        $('saquePix').disabled = true;
+      }
+    } catch (er) { toast(er.message, 'error'); }
+  }
+
+  function badgeSaque(status) {
+    const m = {
+      pendente: { label: 'Pendente', cls: 'status-pendente' },
+      concluido: { label: 'Concluído', cls: 'status-concluido' },
+      cancelado: { label: 'Cancelado', cls: 'status-cancelado' }
+    };
+    const b = m[status] || m.pendente;
+    return `<span class="status-badge ${b.cls}">${b.label}</span>`;
+  }
+
+  $('btnSolicitarSaque').addEventListener('click', async () => {
+    const valor = Number($('saqueValor').value) || 0;
+    const pix = $('saquePix').value.trim();
+    if (valor <= 0) return toast('Informe um valor válido.', 'error');
+    if (!pix) return toast('Informe a chave PIX de destino.', 'error');
+    try {
+      await api('/api/admin/barbearias/' + state.barbeariaId + '/saques', {
+        method: 'POST',
+        body: JSON.stringify({ valor, pix_chave: pix })
+      });
+      toast('Saque solicitado com sucesso!', 'success');
+      $('saqueValor').value = '';
+      $('saquePix').value = '';
+      carregarSaldos();
+    } catch (er) { toast(er.message, 'error'); }
+  });
+
+  window.AdminSaldos = {
+    processar(id) {
+      if (!confirm('Confirmar transferência PIX para a chave informada?')) return;
+      api('/api/admin/saques/' + id + '/processar', { method: 'POST' })
+        .then(() => { toast('Saque transferido com sucesso!', 'success'); carregarSaldos(); })
+        .catch((er) => toast(er.message, 'error'));
+    }
+  };
 
   window.AdminBarbearias = {
     gerenciar(id) {

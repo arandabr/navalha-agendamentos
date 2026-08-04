@@ -218,6 +218,18 @@ textarea.form-control { resize: vertical; }
 }
 .panel-title { font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.8px; margin-bottom: 16px; }
 .panel-sub { color: var(--text-dim); font-size: 0.86rem; margin: -8px 0 18px; }
+
+.saldo-box {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  color: #17120a;
+  border-radius: 12px;
+  padding: 22px 24px;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 22px rgba(201, 162, 39, 0.25);
+  display: inline-block;
+}
 .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
 .panel-head .panel-title { margin-bottom: 0; }
 .filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }

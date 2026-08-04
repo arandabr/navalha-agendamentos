@@ -85,6 +85,7 @@ async function migrar() {
       asaas_mode TEXT DEFAULT 'sandbox',
       asaas_wallet_id TEXT DEFAULT '',
       asaas_split_percent REAL DEFAULT 0,
+      saldo REAL NOT NULL DEFAULT 0,
       ativa INTEGER DEFAULT 1,
       criado_em TIMESTAMPTZ DEFAULT now()
     )`,
@@ -209,7 +210,19 @@ async function migrar() {
       status TEXT NOT NULL DEFAULT 'pendente',
       pix_base64 TEXT DEFAULT '',
       pix_copia_cola TEXT DEFAULT '',
+      saldo_creditado INTEGER NOT NULL DEFAULT 0,
       criado_em TIMESTAMPTZ DEFAULT now()
+    )`,
+    `CREATE TABLE IF NOT EXISTS saques (
+      id SERIAL PRIMARY KEY,
+      barbearia_id INTEGER NOT NULL REFERENCES barbearias(id) ON DELETE CASCADE,
+      valor REAL NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'pendente',
+      pix_chave TEXT DEFAULT '',
+      asaas_transfer_id TEXT,
+      solicitado_por TEXT DEFAULT 'admin',
+      criado_em TIMESTAMPTZ DEFAULT now(),
+      concluido_em TIMESTAMPTZ
     )`
   ];
   for (const t of tabelas) await pool.query(t);
@@ -223,6 +236,7 @@ async function migrar() {
   if (!barbCols.includes('asaas_mode')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_mode TEXT DEFAULT 'sandbox'`);
   if (!barbCols.includes('asaas_wallet_id')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_wallet_id TEXT DEFAULT ''`);
   if (!barbCols.includes('asaas_split_percent')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_split_percent REAL DEFAULT 0`);
+  if (!barbCols.includes('saldo')) await pool.query(`ALTER TABLE barbearias ADD COLUMN saldo REAL NOT NULL DEFAULT 0`);
 
   const colsAg = await q(`SELECT column_name AS name FROM information_schema.columns WHERE table_name = 'agendamentos'`);
   const agendaCols = colsAg.map((c) => c.name);
@@ -232,6 +246,10 @@ async function migrar() {
   if (!agendaCols.includes('lembrete_enviado')) await pool.query(`ALTER TABLE agendamentos ADD COLUMN lembrete_enviado INTEGER DEFAULT 0`);
   if (!agendaCols.includes('pago')) await pool.query(`ALTER TABLE agendamentos ADD COLUMN pago INTEGER DEFAULT 0`);
   if (!agendaCols.includes('cpf_cliente')) await pool.query(`ALTER TABLE agendamentos ADD COLUMN cpf_cliente TEXT DEFAULT ''`);
+
+  const colsPag = await q(`SELECT column_name AS name FROM information_schema.columns WHERE table_name = 'pagamentos'`);
+  const pagCols = colsPag.map((c) => c.name);
+  if (!pagCols.includes('saldo_creditado')) await pool.query(`ALTER TABLE pagamentos ADD COLUMN saldo_creditado INTEGER NOT NULL DEFAULT 0`);
 }
 
 const HASH_SALT = process.env.ADMIN_SALT || 'navalha-seed-salt';

@@ -59,6 +59,7 @@
         <a class="nav-item" data-view="fidelidade"><i class="fa-solid fa-gift"></i><span>Fidelidade</span></a>
         <a class="nav-item" data-view="lembretes"><i class="fa-solid fa-bell"></i><span>Lembretes</span></a>
         <a class="nav-item" data-view="barbearia"><i class="fa-solid fa-store"></i><span>Minha barbearia</span></a>
+        <a class="nav-item" data-view="saldos"><i class="fa-solid fa-money-bill-transfer"></i><span>Saldo e saques</span></a>
         <a class="nav-item admin-only" data-view="barbearias"><i class="fa-solid fa-building"></i><span>Todas as barbearias</span></a>
       </nav>
 
@@ -332,6 +333,46 @@
               </div>
               <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Salvar alterações</button>
             </form>
+          </div>
+        </section>
+
+        <!-- ===== Saldo e Saques ===== -->
+        <section class="view hidden" id="view-saldos">
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title"><i class="fa-solid fa-wallet"></i> Saldo disponível</h3>
+            </div>
+            <p class="panel-sub">O saldo é creditado automaticamente conforme os PIX são confirmados (percentual da barbearia). Você pode solicitar o saque para sua chave PIX.</p>
+            <div class="saldo-box" id="saldoValor">R$ 0,00</div>
+            <div class="form-row-3" id="saqueFormRow" style="margin-top:6px">
+              <div class="form-group"><label>Valor do saque</label><input type="number" id="saqueValor" class="form-control" min="0.01" step="0.01" placeholder="0,00"></div>
+              <div class="form-group"><label>Chave PIX de destino</label><input type="text" id="saquePix" class="form-control" placeholder="CPF, e-mail, telefone ou chave aleatória"></div>
+              <div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-gold" id="btnSolicitarSaque" style="width:100%"><i class="fa-solid fa-paper-plane"></i> Solicitar saque</button></div>
+            </div>
+          </div>
+
+          <div class="panel admin-only">
+            <div class="panel-head">
+              <h3 class="panel-title">Saldos das barbearias</h3>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Barbearia</th><th>Percentual</th><th>Saldo</th></tr></thead>
+                <tbody id="saldosBarbearias"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3 class="panel-title">Histórico de saques</h3>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>ID</th><th class="admin-only">Barbearia</th><th>Valor</th><th>Chave PIX</th><th>Status</th><th class="admin-only th-actions">Ações</th></tr></thead>
+                <tbody id="saquesList"></tbody>
+              </table>
+            </div>
           </div>
         </section>
 

@@ -269,12 +269,6 @@ const asaasBase = (b) => ASAAS_URLS[asaasModeEfetivo(b) === 'production' ? 'prod
 async function criarCobrancaPix(b, ag) {
   const valor = Number(ag.preco) || 0;
   if (valor <= 0) throw new Error('Valor inválido para o pagamento.');
-  const split = [];
-  const walletId = (b && b.asaas_wallet_id) || '';
-  const splitPercent = Number((b && b.asaas_split_percent) || 0);
-  if (walletId && splitPercent > 0) {
-    split.push({ walletId, percentualValue: splitPercent });
-  }
   const res = await fetch(asaasBase(b) + '/payments', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', access_token: asaasKey(b) },
@@ -289,8 +283,7 @@ async function criarCobrancaPix(b, ag) {
       value: valor,
       dueDate: ag.data,
       description: 'Agendamento #' + String(ag.id).padStart(4, '0') + ' - ' + ag.servico_nome,
-      externalReference: String(ag.id),
-      ...(split.length ? { split } : {})
+      externalReference: String(ag.id)
     })
   });
   const data = await res.json();
@@ -325,12 +318,80 @@ async function processarWebhookAsaas(evento, payment) {
   if (evento === 'PAYMENT_RECEIVED' || evento === 'PAYMENT_CONFIRMED') {
     await r("UPDATE pagamentos SET status = 'confirmado' WHERE id = ?", [pag.id]);
     await r("UPDATE agendamentos SET pago = 1, status = CASE WHEN status = 'pendente' THEN 'confirmado' ELSE status END WHERE id = ?", [pag.agendamento_id]);
+    await creditarSaldoBarbearia(pag);
   } else if (evento === 'PAYMENT_REFUNDED' || evento === 'PAYMENT_DELETED') {
     await r("UPDATE pagamentos SET status = 'cancelado' WHERE id = ?", [pag.id]);
     await r('UPDATE agendamentos SET pago = 0 WHERE id = ?', [pag.agendamento_id]);
+    await debitarSaldoBarbearia(pag);
   } else if (evento === 'PAYMENT_OVERDUE') {
     await r("UPDATE pagamentos SET status = 'expirado' WHERE id = ?", [pag.id]);
   }
+}
+
+async function creditarSaldoBarbearia(pag) {
+  if (!pag || pag.saldo_creditado) return;
+  const barb = await g('SELECT * FROM barbearias WHERE id = ?', [pag.barbearia_id]);
+  if (!barb) return;
+  const percent = Number(barb.asaas_split_percent) || 0;
+  const valorBarbearia = percent > 0 ? (Number(pag.valor) || 0) * percent / 100 : 0;
+  if (valorBarbearia <= 0) {
+    await r('UPDATE pagamentos SET saldo_creditado = 1 WHERE id = ?', [pag.id]);
+    return;
+  }
+  await trans(async (ctx) => {
+    await ctx.r('UPDATE pagamentos SET saldo_creditado = 1 WHERE id = ?', [pag.id]);
+    await ctx.r('UPDATE barbearias SET saldo = saldo + ? WHERE id = ?', [valorBarbearia, pag.barbearia_id]);
+  });
+}
+
+async function debitarSaldoBarbearia(pag) {
+  if (!pag || !pag.saldo_creditado) return;
+  const barb = await g('SELECT * FROM barbearias WHERE id = ?', [pag.barbearia_id]);
+  if (!barb) return;
+  const percent = Number(barb.asaas_split_percent) || 0;
+  const valorBarbearia = percent > 0 ? (Number(pag.valor) || 0) * percent / 100 : 0;
+  if (valorBarbearia <= 0) {
+    await r('UPDATE pagamentos SET saldo_creditado = 0 WHERE id = ?', [pag.id]);
+    return;
+  }
+  await trans(async (ctx) => {
+    await ctx.r('UPDATE pagamentos SET saldo_creditado = 0 WHERE id = ?', [pag.id]);
+    await ctx.r('UPDATE barbearias SET saldo = GREATEST(0, saldo - ?) WHERE id = ?', [valorBarbearia, pag.barbearia_id]);
+  });
+}
+
+function inferirTipoPix(chave) {
+  const c = String(chave || '').replace(/[\s.-]/g, '');
+  if (!c) return '';
+  if (/^\d{11}$/.test(c)) return 'CPF';
+  if (/^\d{14}$/.test(c)) return 'CNPJ';
+  if (/^\d{10,11}$/.test(c)) return 'PHONE';
+  if (c.includes('@')) return 'EMAIL';
+  return 'EVP';
+}
+
+async function transferirSaque(b, valor, chavePix) {
+  const valorFmt = Math.round((Number(valor) || 0) * 100) / 100;
+  if (valorFmt <= 0) throw new Error('Valor inválido para o saque.');
+  const tipo = inferirTipoPix(chavePix);
+  if (!tipo) throw new Error('Chave PIX de destino inválida.');
+  const res = await fetch(asaasBase(b) + '/transfers', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', access_token: asaasKey(b) },
+    body: JSON.stringify({
+      value: valorFmt,
+      operationType: 'PIX',
+      pixAddressKey: String(chavePix || '').trim(),
+      pixAddressKeyType: tipo,
+      description: 'Saque barbearia #' + String(b.id).padStart(4, '0')
+    })
+  });
+  const data = await res.json();
+  if (!res.ok || !data.id) {
+    const msg = data.errors ? data.errors.map((e) => e.description).join('; ') : 'Falha ao criar transferência.';
+    throw new Error(msg);
+  }
+  return data;
 }
 
 /* ------------------------------------------------------------------ */
@@ -886,6 +947,80 @@ app.put('/api/admin/barbearias/:id', requireAuth, ah(async (req, res) => {
 app.delete('/api/admin/barbearias/:id', requireAdmin, ah(async (req, res) => {
   await r('DELETE FROM barbearias WHERE id = ?', [req.params.id]);
   res.json({ ok: true });
+}));
+
+/* ------------------------------------------------------------------ */
+/* API Admin — Saldo e Saques                                          */
+/* ------------------------------------------------------------------ */
+
+/* Lista saques de uma barbearia (admin ou dono) */
+app.get('/api/admin/barbearias/:id/saques', requireAuth, ah(async (req, res) => {
+  const b = await getBarbeariaAdmin(req.params.id);
+  if (!b) return res.status(404).json({ error: 'Barbearia não encontrada.' });
+  if (!sessaoPode(req, res, b.id)) return;
+  const saques = await q('SELECT * FROM saques WHERE barbearia_id = ? ORDER BY id DESC', [b.id]);
+  res.json({ saldo: Number(b.saldo) || 0, saques });
+}));
+
+/* Cria um pedido de saque (admin ou dono) */
+app.post('/api/admin/barbearias/:id/saques', requireAuth, ah(async (req, res) => {
+  const b = await getBarbeariaAdmin(req.params.id);
+  if (!b) return res.status(404).json({ error: 'Barbearia não encontrada.' });
+  if (!sessaoPode(req, res, b.id)) return;
+  const valor = Math.round((Number(req.body.valor) || 0) * 100) / 100;
+  const chavePix = String(req.body.pix_chave || '').trim();
+  if (valor <= 0) return res.status(400).json({ error: 'Informe um valor válido para o saque.' });
+  if (!chavePix) return res.status(400).json({ error: 'Informe a chave PIX de destino.' });
+  if ((Number(b.saldo) || 0) < valor) return res.status(400).json({ error: 'Saldo insuficiente para o saque.' });
+  const solicitadoPor = (req.session && req.session.barbearia) ? 'barbearia' : 'admin';
+  const info = await r(
+    "INSERT INTO saques (barbearia_id, valor, status, pix_chave, solicitado_por) VALUES (?, ?, 'pendente', ?, ?) RETURNING id",
+    [b.id, valor, chavePix, solicitadoPor]
+  );
+  res.status(201).json(await g('SELECT * FROM saques WHERE id = ?', [info.lastID]));
+}));
+
+/* Processa um saque: executa a transferência PIX no Asaas (apenas admin) */
+app.post('/api/admin/saques/:id/processar', requireAdmin, ah(async (req, res) => {
+  const saque = await g('SELECT * FROM saques WHERE id = ?', [req.params.id]);
+  if (!saque) return res.status(404).json({ error: 'Saque não encontrado.' });
+  if (saque.status !== 'pendente') return res.status(400).json({ error: 'Este saque já foi processado.' });
+  const b = await getBarbeariaAdmin(saque.barbearia_id);
+  if (!b) return res.status(404).json({ error: 'Barbearia não encontrada.' });
+  if ((Number(b.saldo) || 0) < Number(saque.valor)) return res.status(400).json({ error: 'Saldo insuficiente para este saque.' });
+  try {
+    const transfer = await transferirSaque(b, saque.valor, saque.pix_chave);
+    await trans(async (ctx) => {
+      await ctx.r(
+        "UPDATE saques SET status = 'concluido', asaas_transfer_id = ?, concluido_em = now() WHERE id = ?",
+        [transfer.id, saque.id]
+      );
+      await ctx.r('UPDATE barbearias SET saldo = GREATEST(0, saldo - ?) WHERE id = ?', [saque.valor, b.id]);
+    });
+    res.json({ ok: true, saque: await g('SELECT * FROM saques WHERE id = ?', [saque.id]) });
+  } catch (e) {
+    res.status(502).json({ error: 'Falha na transferência: ' + e.message });
+  }
+}));
+
+/* Cancela um saque pendente (admin ou dono) */
+app.post('/api/admin/saques/:id/cancelar', requireAuth, ah(async (req, res) => {
+  const saque = await g('SELECT * FROM saques WHERE id = ?', [req.params.id]);
+  if (!saque) return res.status(404).json({ error: 'Saque não encontrado.' });
+  if (saque.status !== 'pendente') return res.status(400).json({ error: 'Apenas saques pendentes podem ser cancelados.' });
+  if (!sessaoPode(req, res, saque.barbearia_id)) return;
+  await r("UPDATE saques SET status = 'cancelado' WHERE id = ?", [saque.id]);
+  res.json({ ok: true });
+}));
+
+/* Lista todos os saques (apenas admin) */
+app.get('/api/admin/saques', requireAdmin, ah(async (req, res) => {
+  const rows = await q(`
+    SELECT s.*, b.nome AS barbearia_nome, b.slug AS barbearia_slug
+    FROM saques s JOIN barbearias b ON b.id = s.barbearia_id
+    ORDER BY s.id DESC
+  `);
+  res.json(rows);
 }));
 
 /* ------------------------------------------------------------------ */
