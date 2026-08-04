@@ -548,6 +548,8 @@ textarea.form-control { resize: vertical; min-height: 70px; }
   border-radius: var(--radius);
   padding: 28px 20px;
   width: min(480px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   text-align: center;
   box-shadow: var(--shadow);
   animation: popIn 0.25s ease;
