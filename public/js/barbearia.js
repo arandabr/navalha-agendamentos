@@ -439,7 +439,10 @@
   }
 
   $('confirmationModal').addEventListener('click', (e) => {
-    if (e.target === $('confirmationModal')) $('confirmationModal').classList.add('hidden');
+    if (e.target === $('confirmationModal')) {
+      $('confirmationModal').classList.add('hidden');
+      $('confirmationModal').querySelector('.modal').classList.remove('pix-ativo');
+    }
   });
 
   /* ---------------- PIX via Asaas ---------------- */
@@ -464,6 +467,7 @@
       $('btnPagarPix').classList.add('hidden');
       $('pixQrWrap').classList.remove('hidden');
       $('pixStatusMsg').classList.add('hidden');
+      $('confirmationModal').querySelector('.modal').classList.add('pix-ativo');
       if (p.pix_base64) {
         $('pixQrImg').src = 'data:image/png;base64,' + p.pix_base64;
       } else {
