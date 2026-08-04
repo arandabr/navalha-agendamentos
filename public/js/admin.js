@@ -1051,14 +1051,18 @@
       $('bbImagem').value = b.imagem;
       $('bbCapa').value = b.capa;
       $('bbPix').value = b.pix_chave || '';
+      $('bbWalletId').value = b.asaas_wallet_id || '';
+      $('bbSplitPercent').value = b.asaas_split_percent || '';
       $('bbCor').value = b.cor_primaria || '#c9a227';
       $('bbSlugAcesso').textContent = b.slug || '';
       $('bbAtiva').checked = !!b.ativa;
       if (state.dono) {
         $('bbAtiva').disabled = true;
         $('bbDonoInfo').classList.add('hidden');
+        $('bbSplitRow').classList.add('hidden');
       } else {
         $('bbDonoInfo').classList.remove('hidden');
+        $('bbSplitRow').classList.remove('hidden');
       }
       $('bbSlugFull').textContent = location.origin + '/b/' + (slugificar(b.slug) || '');
       checarSlug($('bbSlugStatus'), b.slug, b.id);
@@ -1091,6 +1095,8 @@
       imagem: $('bbImagem').value.trim(),
       capa: $('bbCapa').value.trim(),
       pix_chave: $('bbPix').value.trim(),
+      asaas_wallet_id: $('bbWalletId').value.trim(),
+      asaas_split_percent: Number($('bbSplitPercent').value) || 0,
       cor_primaria: $('bbCor').value,
       ativa: $('bbAtiva').checked ? 1 : 0
     };

@@ -269,6 +269,12 @@ const asaasBase = (b) => ASAAS_URLS[asaasModeEfetivo(b) === 'production' ? 'prod
 async function criarCobrancaPix(b, ag) {
   const valor = Number(ag.preco) || 0;
   if (valor <= 0) throw new Error('Valor inválido para o pagamento.');
+  const split = [];
+  const walletId = (b && b.asaas_wallet_id) || '';
+  const splitPercent = Number((b && b.asaas_split_percent) || 0);
+  if (walletId && splitPercent > 0) {
+    split.push({ walletId, percentualValue: splitPercent });
+  }
   const res = await fetch(asaasBase(b) + '/payments', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', access_token: asaasKey(b) },
@@ -283,7 +289,8 @@ async function criarCobrancaPix(b, ag) {
       value: valor,
       dueDate: ag.data,
       description: 'Agendamento #' + String(ag.id).padStart(4, '0') + ' - ' + ag.servico_nome,
-      externalReference: String(ag.id)
+      externalReference: String(ag.id),
+      ...(split.length ? { split } : {})
     })
   });
   const data = await res.json();
@@ -554,7 +561,7 @@ app.get('/api/agendamentos/:token', ah(async (req, res) => {
 /* PIX: cria cobrança Asaas para um agendamento (público) */
 app.post('/api/agendamentos/:id/pix', ah(async (req, res) => {
   const ag = await g(`
-    SELECT ag.*, b.asaas_api_key, b.asaas_mode, b.nome AS barbearia_nome, s.nome AS servico_nome
+    SELECT ag.*, b.asaas_api_key, b.asaas_mode, b.asaas_wallet_id, b.asaas_split_percent, b.nome AS barbearia_nome, s.nome AS servico_nome
     FROM agendamentos ag
     JOIN barbearias b ON b.id = ag.barbearia_id
     JOIN servicos s ON s.id = ag.servico_id
@@ -845,9 +852,9 @@ app.put('/api/admin/barbearias/:id', requireAuth, ah(async (req, res) => {
   }
 
   const campos = ['nome', 'slug', 'tagline', 'descricao', 'endereco', 'cidade', 'telefone',
-    'whatsapp', 'email', 'instagram', 'imagem', 'capa', 'cor_primaria', 'horario_texto', 'pix_chave',
-    'asaas_api_key', 'asaas_mode'];
-  if (!ehDono) campos.push('avaliacao');
+    'whatsapp', 'email', 'instagram', 'imagem', 'capa', 'cor_primaria', 'horario_texto', 'pix_chave'];
+  const camposAdmin = ['asaas_api_key', 'asaas_mode', 'asaas_wallet_id', 'asaas_split_percent'];
+  if (!ehDono) campos.push(...camposAdmin, 'avaliacao');
   const updates = [];
   const valores = [];
   for (const c of campos) {

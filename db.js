@@ -83,6 +83,8 @@ async function migrar() {
       senha_hash TEXT DEFAULT '',
       asaas_api_key TEXT DEFAULT '',
       asaas_mode TEXT DEFAULT 'sandbox',
+      asaas_wallet_id TEXT DEFAULT '',
+      asaas_split_percent REAL DEFAULT 0,
       ativa INTEGER DEFAULT 1,
       criado_em TIMESTAMPTZ DEFAULT now()
     )`,
@@ -219,6 +221,8 @@ async function migrar() {
   if (!barbCols.includes('senha_hash')) await pool.query(`ALTER TABLE barbearias ADD COLUMN senha_hash TEXT DEFAULT ''`);
   if (!barbCols.includes('asaas_api_key')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_api_key TEXT DEFAULT ''`);
   if (!barbCols.includes('asaas_mode')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_mode TEXT DEFAULT 'sandbox'`);
+  if (!barbCols.includes('asaas_wallet_id')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_wallet_id TEXT DEFAULT ''`);
+  if (!barbCols.includes('asaas_split_percent')) await pool.query(`ALTER TABLE barbearias ADD COLUMN asaas_split_percent REAL DEFAULT 0`);
 
   const colsAg = await q(`SELECT column_name AS name FROM information_schema.columns WHERE table_name = 'agendamentos'`);
   const agendaCols = colsAg.map((c) => c.name);

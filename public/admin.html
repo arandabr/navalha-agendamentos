@@ -309,6 +309,14 @@
                 <div class="form-group"><label>Nova senha de acesso</label><input type="password" id="bbSenha" class="form-control" placeholder="Deixe em branco para não alterar" autocomplete="new-password"></div>
                 <div class="form-group"><label>Cor primária</label><input type="color" id="bbCor" class="form-control color-input" value="#c9a227"></div>
               </div>
+              <div class="form-row-3" id="bbSplitRow">
+                <div class="form-group"><label>Asaas Wallet ID (da barbearia)</label><input type="text" id="bbWalletId" class="form-control" placeholder="Ex.: 48548710-9baa-4ec1-a11f-9010193527c6">
+                  <p class="slug-note">Carteira Asaas da barbearia para receber o repasse do split.</p>
+                </div>
+                <div class="form-group"><label>Percentual do split (%)</label><input type="number" id="bbSplitPercent" class="form-control" min="0" max="100" step="0.01" placeholder="Ex.: 85 = 85% para a barbearia">
+                  <p class="slug-note">Percentual do valor que vai para a barbearia. O restante fica com a plataforma.</p>
+                </div>
+              </div>
               <div class="form-row-3">
                 <div class="form-group" style="display:flex;align-items:flex-end;gap:10px;">
                   <label class="switch" style="margin-bottom:12px;">
